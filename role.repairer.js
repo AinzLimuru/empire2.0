@@ -23,8 +23,8 @@ var roleRepairer = {
                 it++;
             }
             else {
-                if(!creep.position.inRangeTo(Memory.builderPos.x,Memory.builderPos.y,4)){//能量补充完毕，返回休息区待命(当builder数量过多时，在数量控制处进行角色转换）
-                    creep.moveTo(Memory.builderPos.x,Memory.builderPos.y);
+                if(!creep.position.inRangeTo(Memory.repairerPos.x,Memory.repairerPos.y,4)){//能量补充完毕，返回休息区待命(当builder数量过多时，在数量控制处进行角色转换）
+                    creep.moveTo(Memory.repairerPos.x,Memory.repairerPos.y);
 
                 }
             }
