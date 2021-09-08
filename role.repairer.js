@@ -1,5 +1,4 @@
 var roleRepairer = {
-    it:0,
     run: function (creep) {
         var repairList = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
@@ -30,10 +29,11 @@ var roleRepairer = {
             }
         }
         else {
-            var sources = creep.room.find(FIND_SOURCES);
-            if(this.it >= 3){//在各个资源点均匀采集
-                this.it = 0;
-            }
+            var containers = creep.room.find(FIND_STRUCTURES, {//找到所有非空储存罐
+                filter: (i) => i.structureType == STRUCTURE_CONTAINER &&
+                    i.store[RESOURCE_ENERGY] > 0
+            });
+            let it = 0;
             if(creep.memory.hasOwnProperty('harvestTarget') == false){
                 creep.memory['harvestTarget'] = 1 - this.it%2;
                 this.it++;
@@ -44,3 +44,5 @@ var roleRepairer = {
         }
     }
 }
+
+module.exports = roleRepairer;
