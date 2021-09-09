@@ -1,4 +1,4 @@
-var roleBUilder = {
+var roleBuilder = {
     run: function (creep) {
         if(!creep.memory.hasOwnProperty('building'))
             creep.memory.building = false;
@@ -35,10 +35,6 @@ var roleBUilder = {
                 }
             }
 
-            if(creep.memory.hasOwnProperty('harvestTarget') == false){
-                creep.memory['harvestTarget'] = 1 - this.it%2;
-                this.it++;
-            }
             if(creep.harvest(sources[creep.memory.harvestTarget]) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(sources[creep.memory.harvestTarget], {visualizePathStyle: {stroke: '#ffaa00'}});
             }
@@ -46,4 +42,4 @@ var roleBUilder = {
     }
 }
 
-module.exports = roleBUilder;
+module.exports = roleBuilder;

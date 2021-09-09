@@ -3,12 +3,13 @@ const roleCarrier = require('role.carrier');
 const roleHarvester = require('role.harvester');
 const roleRepairer = require('role.repairer');
 const roleUpgrader = require('role.upgrader');
+const roleDistributor = require('role.distributor');
 const roomSpawn = require('room.spawn');
 /*
 生产的creep body需求过高，导致无法生产（加入判断条件会比较好）
  */
 module.exports.loop = function() {
-    let cbuilder = 0,ccarrier = 0,charvester = 0,crepairer = 0,cupgrader = 0;
+    let cbuilder = 0,ccarrier = 0,charvester = 0,crepairer = 0,cupgrader = 0,cdistributor = 0;
     for(var name in Memory.creeps) {//统计并清理死亡creep
         if(!Game.creeps[name]) {
             switch(Memory.creeps[name].role){
@@ -27,6 +28,9 @@ module.exports.loop = function() {
                     break;
                 case 'upgrader':
                     roomSpawm.addSpawnPlan([WORK,CARRY,MOVE],{role:'upgrader',target:Memory.creeps[name].target});
+                    break;
+                case 'distributor':
+                    roomSpawm.addSpawnPlan([WORK,CARRY,MOVE],{role:'distributor',target:Memory.creeps[name].target});
                     break;
             }
             delete Memory.creeps[name];
@@ -47,6 +51,9 @@ module.exports.loop = function() {
                     break;
                 case 'upgrader':
                     cupgrader++;
+                    break;
+                case 'distributor':
+                    cdistributor++;
                     break;
             }
         }
@@ -77,6 +84,9 @@ module.exports.loop = function() {
                 break;
             case 'upgrader':
                 roleUpgrader.run(creep);
+                break;
+            case 'distributor':
+                roleDistributor.run(creep);
                 break;
         }
     }
