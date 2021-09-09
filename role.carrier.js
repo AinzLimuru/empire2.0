@@ -5,29 +5,31 @@ var roleCarrier = {
         }
 
         if(creep.memory.sending && creep.store.getUsedCapacity() == 0){
-            creep.memory = false;
+            creep.memory.sending = false;
             creep.say('getting');
         }
 
-        if(!creep.memory.sending && creep.store().getFreeCapacity() == 0){
-            creep.memory = true;
+        if(!creep.memory.sending && creep.store.getFreeCapacity() == 0){
+            creep.memory.sending = true;
             creep.say('sending');
         }
 
         if(creep.memory.sending){
-            if(creep.transfer(Game.getObjectById(creep.memory.sending)) == ERR_NOT_IN_RANGE){
-                creep.moveTo(Game.getObjectById(creep.memory.sending))
+            if(creep.transfer(Game.getObjectById(creep.memory.container), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
+                creep.moveTo(Game.getObjectById(creep.memory.container).pos)
             }
         }
         else if(creep.memory.target){
-            for(name in Game.getObjectById(creep.memory.target).memory.harvester){
-                Game.creeps[name].memory.carrier = creep.id;
+            let flag = Game.flags[creep.memory.target];
+            for(name in flag.memory.harvester){
+                if(creep.pos.getRangeTo(Game.creeps[name].pos) <= 1)
+                    Game.creeps[name].memory.carrier = creep.id;
+                else
+                    creep.moveTo(Game.creeps[name].pos);
             }
         }
 
     }
 }
-
-module.exports = roleCarrier;
 
 module.exports = roleCarrier;

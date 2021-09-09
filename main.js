@@ -4,33 +4,35 @@ const roleHarvester = require('role.harvester');
 const roleRepairer = require('role.repairer');
 const roleUpgrader = require('role.upgrader');
 const roomSpawn = require('room.spawn');
-
+/*
+生产的creep body需求过高，导致无法生产（加入判断条件会比较好）
+ */
 module.exports.loop = function() {
     let cbuilder = 0,ccarrier = 0,charvester = 0,crepairer = 0,cupgrader = 0;
     for(var name in Memory.creeps) {//统计并清理死亡creep
         if(!Game.creeps[name]) {
-            switch(Game.creeps[name].role){
+            switch(Memory.creeps[name].role){
                 case 'harvester':
-                    roomSpawn.addSpawnPlan([WORK,WORK,WORK,WORK,WORK,CARRY,MOVE],{role:'harvester',target:Memory.creeps[name].target});
-                    delete Game.getObjectById(Memory.creeps[name].target).memory.harvesters[name];
+                    roomSpawn.addSpawnPlan([WORK,CARRY,MOVE],{role:'harvester',target:Memory.creeps[name].target});
+                    delete Game.flags[Memory.creeps[name].target].memory.harvester[name];
                     break;
                 case 'builder':
-                    roomSpawn.addSpawnPlan([WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE],{role:'builder',target:Memory.creeps[name].target});
+                    roomSpawn.addSpawnPlan([WORK,CARRY,MOVE],{role:'builder',target:Memory.creeps[name].target});
                     break;
                 case 'carrier':
-                    roomSpawn.addSpawnPlan([CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE],{role:'carrier',target:Memory.creeps[name].target})
+                    roomSpawn.addSpawnPlan([WORK,CARRY,MOVE],{role:'carrier',target:Memory.creeps[name].target})
                     break;
                 case 'repairer':
-                    roomSpawm.addSpawnPlan([WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE],{role:'repairer',target:Memory.creeps[name].target});
+                    roomSpawm.addSpawnPlan([WORK,CARRY,MOVE],{role:'repairer',target:Memory.creeps[name].target});
                     break;
                 case 'upgrader':
-                    roomSpawm.addSpawnPlan([WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE],{role:'upgrader',target:Memory.creeps[name].target});
+                    roomSpawm.addSpawnPlan([WORK,CARRY,MOVE],{role:'upgrader',target:Memory.creeps[name].target});
                     break;
             }
             delete Memory.creeps[name];
             console.log('Clearing non-existing creep memory:', name);
         }else{
-            switch(Game.creeps[name].role) {
+            switch(Game.creeps[name].memory.role) {
                 case 'harvester':
                     charvester++;
                     break;
