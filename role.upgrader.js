@@ -24,8 +24,8 @@ var roleUpgrader = {
         }
         else {
             var containers = creep.room.find(FIND_STRUCTURES, {//找到所有非空储存罐
-                filter: (i) => i.structureType == STRUCTURE_CONTAINER &&
-                    i.store[RESOURCE_ENERGY] > 0
+            filter: (i) => i.structureType == STRUCTURE_CONTAINER &&
+                i.store[RESOURCE_ENERGY] > 0
             });
             let it = 0;
             for(let i = 0;i<containers.length;i++){//找到最近的非空储存罐

@@ -2,10 +2,10 @@ function harvesterRegister(creep) {//向Source注册
     if(creep.memory.hasOwnProperty('registed') && creep.memory.registed)
         return;
     let flag = Game.flags[creep.memory.target];
-    if(!Game.getObjectById(flag.memory.target).memory.hasOwnProperty('harvester'))
-        Game.getObjectById(flag.memory.target).memory.harvester = {};
-    Game.getObjectById(flag.memory.target).memory.harvester[creep.name] = creep.id;
-    cree.memory.registed = true;
+    if(!flag.memory.hasOwnProperty('harvester'))
+        flag.memory.harvester = {};
+    flag.memory.harvester[creep.name] = creep.id;
+    creep.memory.registed = true;
 }
 
 var roleHarvester = {
@@ -19,7 +19,8 @@ var roleHarvester = {
             }
         }
         if(creep.memory.hasOwnProperty('carrier')){//附近有carrier
-            creep.transfer(Game.getObjectById(creep.carrier),RESOURCE_ENERGY);
+            creep.transfer(Game.getObjectById(creep.memory.carrier),RESOURCE_ENERGY);
+            creep.say('gave you');
             delete creep.memory['carrier'];
         }
     }

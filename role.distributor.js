@@ -20,7 +20,7 @@ var roleDistributor = {
             if(targets.length) {
                 let it = 0;
                 for(let i=0;i<targets.length;i++){//选择最短地点
-                    it = creep.pos.getRangeTo(targets[it].pos) < creep.pos.getRangeTo(targets[it].pos) ? i : it;
+                    it = creep.pos.getRangeTo(targets[i].pos) < creep.pos.getRangeTo(targets[it].pos) ? i : it;
                 }
                 if(creep.transfer(targets[it],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targets[it].pos);
