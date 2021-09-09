@@ -20,7 +20,9 @@ var roleCarrier = {
             }
         }
         else if(creep.memory.target){
-
+            for(name in Game.getObjectById(creep.memory.target).memory.harvester){
+                Game.creeps[name].memory.carrier = creep.id;
+            }
         }
 
     }

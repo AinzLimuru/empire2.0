@@ -65,7 +65,7 @@ module.exports.loop = function() {
                 roleHarvester.run(creep);
                 break;
             case 'builder':
-                roleBuilder.run(crep);
+                roleBuilder.run(creep);
                 break;
             case 'carrier':
                 roleCarrier.run(creep);
