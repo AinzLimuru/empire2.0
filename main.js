@@ -1,9 +1,9 @@
-roleBuilder = require('role.builder')
-roleCarrier = require('role.carrier')
-roleHarvester = require('role.harvester')
-roleRepairer = require('role.repairer')
-roleUpgrader = require('role.upgrader')
-roomSpawn = require('room.spawn')
+const roleBuilder = require('role.builder');
+const roleCarrier = require('role.carrier');
+const roleHarvester = require('role.harvester');
+const roleRepairer = require('role.repairer');
+const roleUpgrader = require('role.upgrader');
+const roomSpawn = require('room.spawn');
 
 module.exports.loop = function() {
     let cbuilder = 0,ccarrier = 0,charvester = 0,crepairer = 0,cupgrader = 0;
@@ -59,7 +59,7 @@ module.exports.loop = function() {
     console.log('upgrader:'+cupgrader);
     console.log('totalCreep:'+(charvester+cbuilder+ccarrier+crepairer+cupgrader));
     for(let name in Game.creeps){
-        creep = Game.creeps[name];
+        let creep = Game.creeps[name];
         switch(creep.memory.role) {
             case 'harvester':
                 roleHarvester.run(creep);

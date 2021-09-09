@@ -28,11 +28,11 @@ var roleUpgrader = {
             });
             let it = 0;
             for(let i = 0;i<containers.length;i++){//找到最近的非空储存罐
-                if(containers[i].position.getRangeTo(creep.position) < containers[it].position.getRangeTo(creep.position)){
+                if(containers[i].pos.getRangeTo(creep.pos) < containers[it].pos.getRangeTo(creep.pos)){
                     it = i;
                 }
             }
-            if(!countainers.length||creep.harvest(countainers[it]) == ERR_NOT_IN_RANGE) {
+            if(!containers.length||creep.harvest(containers[it]) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(sources[it], {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         }
