@@ -1,5 +1,9 @@
 var roleCarrier = {
     run: function (creep) {
+        if(!creep.memory.hasOwnProperty('sending')){
+            creep.memory.sending = false;
+        }
+
         if(creep.memory.sending && creep.store.getUsedCapacity() == 0){
             creep.memory = false;
             creep.say('getting');
@@ -15,15 +19,13 @@ var roleCarrier = {
                 creep.moveTo(Game.getObjectById(creep.memory.sending))
             }
         }
-        else if(creep.memory.harvesterTarget){
-            if(creep.pos.getRangeTo(Game.getObjectById(creep.memory.harvester)) > 1){
-                moveTo(creep.pos);
-            }else {
-                Game.getObjectById(creep.memory.harvester).memory.carrier = creep.id;
-            }
+        else if(creep.memory.target){
+
         }
 
     }
 }
+
+module.exports = roleCarrier;
 
 module.exports = roleCarrier;

@@ -1,5 +1,7 @@
 var roleBUilder = {
     run: function (creep) {
+        if(!creep.memory.hasOwnProperty('building'))
+            creep.memory.building = false;
         if(creep.memory.building && creep.store[RESOURCE_ENERGY] == 0) {
             creep.memory.building = false;
             creep.say('🔄 harvest');
@@ -43,3 +45,5 @@ var roleBUilder = {
         }
     }
 }
+
+module.exports = roleBUilder;

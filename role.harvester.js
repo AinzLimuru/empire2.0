@@ -1,3 +1,10 @@
+function harvesterRegister(creep) {//向Source注册
+    if(creep.memory.hasOwnProperty('registed') && creep.memory.registed)
+        return;
+    Game.getObjectById(creep.memory.target).memory.harvester[creep.name] = creep.id;
+    cree.memory.registed = true;
+}
+
 var roleHarvester = {
     run: function(creep) {
         if(creep.store.getFreeCapacity() > 0){

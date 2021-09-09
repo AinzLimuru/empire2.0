@@ -4,10 +4,13 @@ var roleUpgrader = {
 
     it:0,
     run: function(creep) {
+        if(!creep.memory.hasOwnProperty('upgrading'))
+            creep.upgrading = false;
         if(creep.memory.upgrading && creep.store[RESOURCE_ENERGY] == 0) {//能量耗尽时采集
             creep.memory.upgrading = false;
             creep.say('🔄 withdraw');
         }
+
         if(!creep.memory.upgrading && creep.store.getFreeCapacity() == 0) {//能量采集满时进入upgrade状态
             creep.memory.upgrading = true;
             creep.say('⚡ upgrade');
@@ -24,7 +27,7 @@ var roleUpgrader = {
                 i.store[RESOURCE_ENERGY] > 0
             });
             let it = 0;
-            for(let i = 0;i<containers.length;i++){
+            for(let i = 0;i<containers.length;i++){//找到最近的非空储存罐
                 if(containers[i].position.getRangeTo(creep.position) < containers[it].position.getRangeTo(creep.position)){
                     it = i;
                 }
