@@ -12,8 +12,10 @@ var RoomSpawn = {
             Game.spawns['Spawn1'].memory.spawnPlan = [];
         }
         if(!Game.spawns['Spawn1'].spawning && Game.spawns['Spawn1'].memory.spawnPlan.length){
-            let creepInfo = Game.spawns['Spawn1'].memory.spawnPlan.shift();
-            Game.spawns['Spawn1'].spawnCreep(creepInfo.body, creepInfo.info.role + Game.time, {memory: creepInfo.info});
+            let creepInfo = Game.spawns['Spawn1'].memory.spawnPlan[0];
+            if(Game.spawns['Spawn1'].spawnCreep(creepInfo.body, creepInfo.info.role + Game.time, {memory: creepInfo.info}) == OK){
+                Game.spawns['Spawn1'].memory.spawnPlan.shift();
+            }
         }
     }
 }

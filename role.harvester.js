@@ -14,6 +14,9 @@ var roleHarvester = {
         let flag = Game.flags[creep.memory.target];
         if(creep.store.getFreeCapacity() > 0){
             let source = Game.getObjectById(flag.memory.target);
+            if(!source){
+                creep.say('error')
+            }
             if(creep.harvest(source) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(source,{visuallizePathStyle: {stroke: '#ffaa00'}});
             }

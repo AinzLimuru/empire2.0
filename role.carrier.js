@@ -22,10 +22,15 @@ var roleCarrier = {
         else if(creep.memory.target){
             let flag = Game.flags[creep.memory.target];
             for(name in flag.memory.harvester){
-                if(creep.pos.getRangeTo(Game.creeps[name].pos) <= 1)
-                    Game.creeps[name].memory.carrier = creep.id;
-                else
-                    creep.moveTo(Game.creeps[name].pos);
+                if(!Game.creeps[name]){
+                    delete flag.memory.harvester[name];
+                    
+                }else{
+                    if(creep.pos.getRangeTo(Game.creeps[name].pos) <= 1 && Game.creeps[name].store.getUsedCapacity() > 0)
+                        Game.creeps[name].memory.carrier = creep.id;
+                    else if(Game.creeps[name].store.getUsedCapacity() > 0)
+                        creep.moveTo(Game.creeps[name].pos);
+                }
             }
         }
 

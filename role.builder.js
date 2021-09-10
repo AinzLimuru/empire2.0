@@ -1,9 +1,8 @@
 var roleBuilder = {
     run: function (creep) {
-        creep.say('builder');
         if(!creep.memory.hasOwnProperty('building'))
             creep.memory.building = false;
-        if(creep.memory.building && creep.store[RESOURCE_ENERGY] == 0) {
+        if(creep.memory.building && creep.store.getUsedCapacity() == 0) {
             creep.memory.building = false;
             creep.say('🔄 harvest');
         }
@@ -17,7 +16,6 @@ var roleBuilder = {
                 for(let i=0;i<targets.length;i++){
                     it = creep.pos.getRangeTo(targets[i].pos) < creep.pos.getRangeTo(targets[it].pos) ? i : it;
                 }
-                creep.say(creep.pos.getRangeTo(targets[it].pos));
                 if(creep.build(targets[it]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targets[it].pos);
                 }
@@ -40,7 +38,6 @@ var roleBuilder = {
                     it = i;
                 }
             }
-
             if(creep.withdraw(containers[it],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(containers[it].pos, {visualizePathStyle: {stroke: '#ffaa00'}});
             }

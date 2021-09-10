@@ -4,7 +4,6 @@ var roleUpgrader = {
 
     it:0,
     run: function(creep) {
-        //creep.say('upgrader');
         if(!creep.memory.hasOwnProperty('upgrading'))
             creep.upgrading = false;
         if(creep.memory.upgrading && creep.store[RESOURCE_ENERGY] == 0) {//能量耗尽时采集
