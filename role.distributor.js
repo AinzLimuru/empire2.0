@@ -26,12 +26,9 @@ var roleDistributor = {
                     creep.moveTo(targets[it].pos);
                 }
             }
-            // else {
-            //     if(!creep.position.inRangeTo(Memory.builderPos.x,Memory.builderPos.y,4)){//能量补充完毕，返回休息区待命(当builder数量过多时，在数量控制处进行角色转换）
-            //         creep.moveTo(Memory.builderPos.x,Memory.builderPos.y);
-            //
-            //     }
-            // }
+            else {
+                creep.moveTo(Game.flags['DistributorPos'].pos);
+            }
         }
         else {
             var containers = creep.room.find(FIND_STRUCTURES, {//找到所有非空储存罐

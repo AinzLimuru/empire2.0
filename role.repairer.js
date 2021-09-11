@@ -1,33 +1,67 @@
 var roleRepairer = {
+    needRepair: function (structure) {
+        switch(structure.structureType){
+            case 'STRUCTURE_EXTENSION':
+            case 'STRUCTURE_SPAWN':
+            case 'STRUCTURE_CONTROLLER':
+                return structure.hits < structure.hitsMax;
+            case 'STRUCTURE_CONTAINER':
+                if(!Game.flags['RepairSet'].memroy.RepairSet || Game.flags['RepairSet'].memroy.RepairSet.length == 0 || structure.hits < structure.hitsMax*0.9)
+                    return true;
+                for(let id in Game.flags['RepairSet'].memroy.RepairSet){
+                    let repairingStructure = Game.getObjectById(id);
+                    if(repairingStructure && repairingStructure.structureType != STRUCTURE_CONTAINER){
+                        false;
+                    }
+                }
+                return true;
+            case 'STRUCTURE_ROAD':
+                return structure.hits < structure.hitsMax*0.7;
+
+        }
+        return false;
+    },
+
     run: function (creep) {
-        if(!creep.memory.hasOwnProperty('building'))
-            creep.memory.building = false;
-        if(creep.memory.building && creep.store[RESOURCE_ENERGY] == 0) {
-            creep.memory.building = false;
+        if(!creep.memory.hasOwnProperty('repairing'))
+            creep.memory.repairing = false;
+        if(creep.memory.repairing && creep.store[RESOURCE_ENERGY] == 0) {
+            creep.memory.repairing = false;
             creep.say('🔄 harvest');
         }
-        if(!creep.memory.building && creep.store.getFreeCapacity() == 0){
-            creep.memory.building = true;
+        if(!creep.memory.repairing && creep.store.getFreeCapacity() == 0){
+            creep.memory.repairing = true;
         }
-        if(creep.memory.building) {
+        if(creep.memory.repairing) {
             var targets = creep.room.find(FIND_STRUCTURES, {
-                filter: (i) => i.hits < i.hitsMax
+                filter: (i) => this.needRepair(i)
             });
-            if(targets.length) {
+            if(!Game.flags['RepairSet'].memory.hasOwnProperty('repairSet'))
+                Game.flags['RepairSet'].memory.repairSet = new Set();
+            for(let target in targets) {
+                Game.flags['RepairSet'].memory.add(target.id);
+            }
+            if(Game.flags['RepairSet'].memory.repairSet.length) {
                 let it = 0;
-                for(let i=0;i<targets.length;i++){
-                    it = creep.pos.getRangeTo(targets[it].pos) < creep.pos.getRangeTo(targets[it].pos) ? i : it;
+
+                for(let id in Game.flags['RepairSet'].memory.repairSet){
+                    let structure = Game.getObjectById(id);
+                    if(structure.hits == structure.hitsMax){
+                        Game.flags['RepairSet'].memory.repairSet.delete(id);
+                        continue;
+                    }
+                    if(!it || creep.pos.getRangeTo(structure.pos) < creep.pos.getRangeTo(it.pos)){
+                        it = Game.getObjectById(id);
+                    }
                 }
-                if(creep.repair(targets[it]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[it].pos);
+
+                if(Game.flags['RepairSet'].memory.repairSet.length && creep.repair(it) == ERR_NOT_IN_RANGE) {//元素删除后，set可能为空
+                    creep.moveTo(it.pos);
                 }
             }
-            // else {
-            //     if(!creep.position.inRangeTo(Memory.builderPos.x,Memory.builderPos.y,4)){//能量补充完毕，返回休息区待命(当builder数量过多时，在数量控制处进行角色转换）
-            //         creep.moveTo(Memory.builderPos.x,Memory.builderPos.y);
-            //
-            //     }
-            // }
+            else {
+                creep.moveTo(Game.flags['RepairerPos'].pos);
+            }
         }
         else {
             var containers = creep.room.find(FIND_STRUCTURES, {//找到所有非空储存罐

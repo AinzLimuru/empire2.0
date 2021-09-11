@@ -1,4 +1,35 @@
 var RoomSpawn = {
+    init: function () {
+        _.assign(StructureSpawn.prototype, this.spawnExtension)
+    },
+    spawnExtension: {
+        getAvailableEnergy: function () {
+            let extensions = this.room.find(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return (structure.structureType == STRUCTURE_EXTENSION) &&
+                        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                }
+            });
+            let total = this.store.getUsedCapacity();
+            for(let extension in extensions){
+                total += extension.store.getUsedCapacity();
+            }
+            return total;
+        },
+        getTotalCapacity: function() {
+            let extensions = this.room.find(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return (structure.structureType == STRUCTURE_EXTENSION) &&
+                        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                }
+            });
+            let total = this.store.getCapacity();
+            for(let extension in extensions){
+                total += extension.store.getCapacity();
+            }
+            return total;
+        }
+    },
     addSpawnPlan: function (body,info) {
         console.log('new ' + info.role);
         let name = info.role + Game.time;
@@ -18,6 +49,7 @@ var RoomSpawn = {
             }
         }
     }
+
 }
 
 module.exports = RoomSpawn;
