@@ -22,19 +22,19 @@ module.exports.loop = function() {
                         delete Game.flags[Memory.creeps[name].target].memory.harvester[name];
                         break;
                     case 'builder':
-                        roomSpawn.addSpawnPlan([WORK,WORK,CARRY,MOVE],{role:'builder',target:Memory.creeps[name].target});
+                        roomSpawn.addSpawnPlan([WORK,WORK,CARRY,CARRY,MOVE,MOVE],{role:'builder',target:Memory.creeps[name].target});
                         break;
                     case 'carrier':
-                        roomSpawn.addSpawnPlan([CARRY,CARRY,CARRY,MOVE,MOVE,MOVE],{role:'carrier',target:Memory.creeps[name].target,container:Memory.creeps[name].container})
+                        roomSpawn.addSpawnPlan([CARRY,CARRY,CARRY,MOVE,MOVE,MOVE],{role:'carrier',target:Memory.creeps[name].target,container:Memory.creeps[name].container,storage:Memory.creeps[name].storage})
                         break;
                     case 'repairer':
-                        roomSpawn.addSpawnPlan([WORK,WORK,CARRY,MOVE],{role:'repairer',target:Memory.creeps[name].target});
+                        roomSpawn.addSpawnPlan([WORK,WORK,CARRY,CARRY,MOVE],{role:'repairer',target:Memory.creeps[name].target});
                         break;
                     case 'upgrader':
-                        roomSpawn.addSpawnPlan([WORK,CARRY,MOVE],{role:'upgrader',target:Memory.creeps[name].target});
+                        roomSpawn.addSpawnPlan([WORK,WORK,CARRY,CARRY,MOVE,MOVE],{role:'upgrader',target:Memory.creeps[name].target});
                         break;
                     case 'distributor':
-                        roomSpawn.addSpawnPlan([CARRY,CARRY,MOVE],{role:'distributor',target:Memory.creeps[name].target});
+                        roomSpawn.addSpawnPlan([CARRY,CARRY,CARRY,CARRY,MOVE,MOVE],{role:'distributor',target:Memory.creeps[name].target});
                         break;
                 }
             }

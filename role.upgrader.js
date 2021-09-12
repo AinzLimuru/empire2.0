@@ -22,19 +22,19 @@ var roleUpgrader = {
             }
         }
         else {
-            var containers = creep.room.find(FIND_STRUCTURES, {//找到所有非空储存罐
-            filter: (i) => i.structureType == STRUCTURE_CONTAINER &&
-                i.store[RESOURCE_ENERGY] > 0
+            var saveTarget = creep.room.find(FIND_STRUCTURES, {//找到所有非空储存罐
+            filter: (i) => (i.structureType == STRUCTURE_CONTAINER || i.structureType == STRUCTURE_STORAGE )&&
+                i.store[RESOURCE_ENERGY] > 300
             });
             let it = 0;
-            for(let i = 0;i<containers.length;i++){//找到最近的非空储存罐
-                if(containers[i].pos.getRangeTo(creep.pos) < containers[it].pos.getRangeTo(creep.pos)){
+            for(let i = 0;i<saveTarget.length;i++){//找到最近的非空储存罐
+                if(saveTarget[i].pos.getRangeTo(creep.pos) < saveTarget[it].pos.getRangeTo(creep.pos)){
                     it = i;
                 }
             }
-            //creep.say(creep.withdraw(containers[it], RESOURCE_ENERGY));
-            if(containers.length > 0 && creep.withdraw(containers[it], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(containers[it].pos, {visualizePathStyle: {stroke: '#ffaa00'}});
+            //creep.say(creep.withdraw(saveTarget[it], RESOURCE_ENERGY));
+            if(saveTarget.length > 0 && creep.withdraw(saveTarget[it], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(saveTarget[it].pos, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
         }
     }

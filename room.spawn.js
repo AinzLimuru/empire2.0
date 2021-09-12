@@ -42,6 +42,15 @@ var RoomSpawn = {
         if(!Game.spawns['Spawn1'].memory.hasOwnProperty('spawnPlan')){
             Game.spawns['Spawn1'].memory.spawnPlan = [];
         }
+        for(let i=0 ;i < Game.spawns['Spawn1'].memory.spawnPlan.length;i++){//优先生成distributor
+            if(Game.spawns['Spawn1'].memory.spawnPlan[i].info.role == 'distributor'){
+                let creepInfo = Game.spawns['Spawn1'].memory.spawnPlan[i];
+                if(Game.spawns['Spawn1'].spawnCreep(creepInfo.body, creepInfo.info.role + Game.time, {memory: creepInfo.info}) == OK){
+                    Game.spawns['Spawn1'].memory.spawnPlan.splice(i,1);
+                }
+                return;
+            }
+        }
         if(!Game.spawns['Spawn1'].spawning && Game.spawns['Spawn1'].memory.spawnPlan.length){
             let creepInfo = Game.spawns['Spawn1'].memory.spawnPlan[0];
             if(Game.spawns['Spawn1'].spawnCreep(creepInfo.body, creepInfo.info.role + Game.time, {memory: creepInfo.info}) == OK){

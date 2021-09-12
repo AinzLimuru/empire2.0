@@ -25,19 +25,19 @@ var roleBuilder = {
             }
         }
         else {
-            let containers = creep.room.find(FIND_STRUCTURES, {//找到所有非空储存罐
-                filter: (i) => i.structureType == STRUCTURE_CONTAINER &&
+            let saveTarget = creep.room.find(FIND_STRUCTURES, {//找到所有非空储存罐
+                filter: (i) => (i.structureType == STRUCTURE_CONTAINER || i.structureType == STRUCTURE_STORAGE ) &&
                     i.store[RESOURCE_ENERGY] > 0
             });
             let it = 0;
-            if(containers.length > 0) {//有存储罐
-                for (let i = 0; i < containers.length; i++) {
-                    if (containers[i].pos.getRangeTo(creep.pos) < containers[it].pos.getRangeTo(creep.pos)) {
+            if(saveTarget.length > 0) {//有存储罐
+                for (let i = 0; i < saveTarget.length; i++) {
+                    if (saveTarget[i].pos.getRangeTo(creep.pos) < saveTarget[it].pos.getRangeTo(creep.pos)) {
                         it = i;
                     }
                 }
-                if(creep.withdraw(containers[it],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(containers[it].pos, {visualizePathStyle: {stroke: '#ffaa00'}});
+                if(creep.withdraw(saveTarget[it],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(saveTarget[it].pos, {visualizePathStyle: {stroke: '#ffaa00'}});
                 }
             }
             else if(Game.spawns['Spawn1'].getAvailableEnergy() == Game.spawns['Spawn1'].getTotalCapacity()){//没有存储罐,但extension和Spawn已满
