@@ -31,7 +31,7 @@ var roleRepairer = {
             if(!Game.flags['RepairSet'].memory.hasOwnProperty('repairSet'))
                 Game.flags['RepairSet'].memory.repairSet = new Set();
             for(let i=0; i<targets.length; i++){
-                Game.flags['RepairSet'].memory.repairSet[targets[i].id] = '1';
+                Game.flags['RepairSet'].memory.repairSet[targets[i].id] = {'type':targets[i].structureType, 'pos':targets[i].pos}
             }
             creep.say(Object.keys(Game.flags['RepairSet'].memory.repairSet).length)
             if(Object.keys(Game.flags['RepairSet'].memory.repairSet).length) {
@@ -39,7 +39,8 @@ var roleRepairer = {
 
                 for(let id in Game.flags['RepairSet'].memory.repairSet){
                     let structure = Game.getObjectById(id);
-                    if(!structure || structure.hits == structure.hitsMax){//建筑不存在或已被摧毁
+                    if(!structure || structure.hits == structure.hitsMax){//建筑不存在或已被摧毁,执行重建
+                        creep.room.createConstructionSite(Game.flags['RepairSet'].memory.repairSet[id].pos,Game.flags['RepairSet'].memory.repairSet[id].type);
                         delete Game.flags['RepairSet'].memory.repairSet[id];
                         continue;
                     }
