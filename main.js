@@ -5,7 +5,9 @@ const roleRepairer = require('role.repairer');
 const roleUpgrader = require('role.upgrader');
 const roleDistributor = require('role.distributor');
 const roleTowerServer = require('role.towerServer');
+const roleWallRepairer = require('role.wallRepairer');
 const roomSpawn = require('room.spawn');
+const roomTower = require('room.tower');
 /*
 生产的creep body需求过高，导致无法生产（加入判断条件会比较好）
  */
@@ -13,7 +15,7 @@ const roomSpawn = require('room.spawn');
 roomSpawn.init();
 
 module.exports.loop = function() {
-    let cbuilder = 0,ccarrier = 0,charvester = 0,crepairer = 0,cupgrader = 0,cdistributor = 0,ctowerServer = 0;
+    let cbuilder = 0,ccarrier = 0,charvester = 0,crepairer = 0,cupgrader = 0,cdistributor = 0,ctowerServer = 0,cwallRepairer = 0;
     for(var name in Memory.creeps) {//统计并清理死亡creep
         if(!Game.creeps[name]) {
             if(!Memory.creeps[name].hasOwnProperty('killedByPlayer') || !Memory.creeps[name].killedByPlayer){//被玩家杀死不复活
@@ -40,6 +42,8 @@ module.exports.loop = function() {
                     case 'towerServer':
                         roomSpawn.addSpawnPlan([CARRY,CARRY,CARRY,CARRY,MOVE,MOVE],{role:'towerServer',target:Memory.creeps[name].target});
                         break;
+                    case 'wallRepairer':
+                        roomSpawn.addSpawnPlan([WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE], {role:'wallRepairer'});
                 }
             }
             delete Memory.creeps[name];
@@ -66,6 +70,9 @@ module.exports.loop = function() {
                     break;
                 case 'towerServer':
                     ctowerServer++;
+                    break;
+                case 'wallRepairer':
+                    cwallRepairer++;
                     break;
             }
         }
@@ -105,10 +112,14 @@ module.exports.loop = function() {
             case 'towerServer':
                 roleTowerServer.run(creep);
                 break;
+            case 'wallRepairer':
+                roleWallRepairer.run(creep);
+                break;
         }
         if(creep.memory.killedByPlayer){
             creep.suicide();
         }
     }
     roomSpawn.spawn();
+    roomTower.run();
 }

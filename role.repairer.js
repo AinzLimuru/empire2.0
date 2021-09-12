@@ -1,21 +1,13 @@
 var roleRepairer = {
     needRepair: function (structure) {
         switch(structure.structureType){
-            case 'STRUCTURE_EXTENSION':
-            case 'STRUCTURE_SPAWN':
-            case 'STRUCTURE_CONTROLLER':
+            case STRUCTURE_EXTENSION:
+            case STRUCTURE_SPAWN:
+            case STRUCTURE_CONTROLLER:
                 return structure.hits < structure.hitsMax;
-            case 'STRUCTURE_CONTAINER':
-                if(!Game.flags['RepairSet'].memroy.RepairSet || Game.flags['RepairSet'].memroy.RepairSet.length == 0 || structure.hits < structure.hitsMax*0.9)
-                    return true;
-                for(let id in Game.flags['RepairSet'].memroy.RepairSet){
-                    let repairingStructure = Game.getObjectById(id);
-                    if(repairingStructure && repairingStructure.structureType != STRUCTURE_CONTAINER){
-                        false;
-                    }
-                }
-                return true;
-            case 'STRUCTURE_ROAD':
+            case STRUCTURE_CONTAINER:
+                return structure.hits < structure.hitsMax*0.9;
+            case STRUCTURE_ROAD:
                 return structure.hits < structure.hitsMax*0.7;
 
         }
@@ -38,23 +30,23 @@ var roleRepairer = {
             });
             if(!Game.flags['RepairSet'].memory.hasOwnProperty('repairSet'))
                 Game.flags['RepairSet'].memory.repairSet = new Set();
-            for(let target in targets) {
-                Game.flags['RepairSet'].memory.add(target.id);
+            for(let i=0; i<targets.length; i++){
+                Game.flags['RepairSet'].memory.repairSet[targets[i].id] = '1';
             }
+            creep.say(Object.keys(Game.flags['RepairSet'].memory.repairSet).length)
             if(Object.keys(Game.flags['RepairSet'].memory.repairSet).length) {
                 let it = 0;
 
                 for(let id in Game.flags['RepairSet'].memory.repairSet){
                     let structure = Game.getObjectById(id);
                     if(!structure || structure.hits == structure.hitsMax){//建筑不存在或已被摧毁
-                        delete Game.flags['RepairSet'].memory.repairSet.id
+                        delete Game.flags['RepairSet'].memory.repairSet[id];
                         continue;
                     }
                     if(!it || creep.pos.getRangeTo(structure.pos) < creep.pos.getRangeTo(it.pos)){
                         it = Game.getObjectById(id);
                     }
                 }
-
                 if(Object.keys(Game.flags['RepairSet'].memory.repairSet).length && creep.repair(it) == ERR_NOT_IN_RANGE) {//元素删除后，set可能为空
                     creep.moveTo(it.pos);
                 }
