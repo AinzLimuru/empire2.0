@@ -41,13 +41,13 @@ var roleRepairer = {
             for(let target in targets) {
                 Game.flags['RepairSet'].memory.add(target.id);
             }
-            if(Game.flags['RepairSet'].memory.repairSet.length) {
+            if(Object.keys(Game.flags['RepairSet'].memory.repairSet).length) {
                 let it = 0;
 
                 for(let id in Game.flags['RepairSet'].memory.repairSet){
                     let structure = Game.getObjectById(id);
-                    if(structure.hits == structure.hitsMax){
-                        Game.flags['RepairSet'].memory.repairSet.delete(id);
+                    if(!structure || structure.hits == structure.hitsMax){//建筑不存在或已被摧毁
+                        delete Game.flags['RepairSet'].memory.repairSet.id
                         continue;
                     }
                     if(!it || creep.pos.getRangeTo(structure.pos) < creep.pos.getRangeTo(it.pos)){
@@ -55,7 +55,7 @@ var roleRepairer = {
                     }
                 }
 
-                if(Game.flags['RepairSet'].memory.repairSet.length && creep.repair(it) == ERR_NOT_IN_RANGE) {//元素删除后，set可能为空
+                if(Object.keys(Game.flags['RepairSet'].memory.repairSet).length && creep.repair(it) == ERR_NOT_IN_RANGE) {//元素删除后，set可能为空
                     creep.moveTo(it.pos);
                 }
             }

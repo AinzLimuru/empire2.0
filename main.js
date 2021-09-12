@@ -4,6 +4,7 @@ const roleHarvester = require('role.harvester');
 const roleRepairer = require('role.repairer');
 const roleUpgrader = require('role.upgrader');
 const roleDistributor = require('role.distributor');
+const roleTowerServer = require('role.towerServer');
 const roomSpawn = require('room.spawn');
 /*
 生产的creep body需求过高，导致无法生产（加入判断条件会比较好）
@@ -12,7 +13,7 @@ const roomSpawn = require('room.spawn');
 roomSpawn.init();
 
 module.exports.loop = function() {
-    let cbuilder = 0,ccarrier = 0,charvester = 0,crepairer = 0,cupgrader = 0,cdistributor = 0;
+    let cbuilder = 0,ccarrier = 0,charvester = 0,crepairer = 0,cupgrader = 0,cdistributor = 0,ctowerServer = 0;
     for(var name in Memory.creeps) {//统计并清理死亡creep
         if(!Game.creeps[name]) {
             if(!Memory.creeps[name].hasOwnProperty('killedByPlayer') || !Memory.creeps[name].killedByPlayer){//被玩家杀死不复活
@@ -35,6 +36,9 @@ module.exports.loop = function() {
                         break;
                     case 'distributor':
                         roomSpawn.addSpawnPlan([CARRY,CARRY,CARRY,CARRY,MOVE,MOVE],{role:'distributor',target:Memory.creeps[name].target});
+                        break;
+                    case 'towerServer':
+                        roomSpawn.addSpawnPlan([CARRY,CARRY,CARRY,CARRY,MOVE,MOVE],{role:'towerServer',target:Memory.creeps[name].target});
                         break;
                 }
             }
@@ -60,6 +64,9 @@ module.exports.loop = function() {
                 case 'distributor':
                     cdistributor++;
                     break;
+                case 'towerServer':
+                    ctowerServer++;
+                    break;
             }
         }
     }
@@ -71,8 +78,9 @@ module.exports.loop = function() {
     console.log('carrier:'+ccarrier);
     console.log('repairer:'+crepairer);
     console.log('upgrader:'+cupgrader);
-    console.log('distributer:'+cdistributor)
-    console.log('totalCreep:'+(charvester+cbuilder+ccarrier+crepairer+cupgrader+cdistributor));
+    console.log('distributer:'+cdistributor);
+    console.log('towerServer: '+ctowerServer);
+    console.log('totalCreep:'+(charvester+cbuilder+ccarrier+crepairer+cupgrader+cdistributor+ctowerServer));
     for(let name in Game.creeps){
         let creep = Game.creeps[name];
         switch(creep.memory.role) {
@@ -93,6 +101,9 @@ module.exports.loop = function() {
                 break;
             case 'distributor':
                 roleDistributor.run(creep);
+                break;
+            case 'towerServer':
+                roleTowerServer.run(creep);
                 break;
         }
         if(creep.memory.killedByPlayer){
