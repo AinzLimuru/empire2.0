@@ -1,3 +1,4 @@
+const creepExtension = require('creep.extension');
 const roleBuilder = require('role.builder');
 const roleCarrier = require('role.carrier');
 const roleHarvester = require('role.harvester');
@@ -8,11 +9,13 @@ const roleTowerServer = require('role.towerServer');
 const roleWallRepairer = require('role.wallRepairer');
 const roomSpawn = require('room.spawn');
 const roomTower = require('room.tower');
+const roomSchedule = require('room.schedule');
 /*
 生产的creep body需求过高，导致无法生产（加入判断条件会比较好）
  */
 
 roomSpawn.init();
+creepExtension.init();
 
 module.exports.loop = function() {
     let cbuilder = 0,ccarrier = 0,charvester = 0,crepairer = 0,cupgrader = 0,cdistributor = 0,ctowerServer = 0,cwallRepairer = 0;
@@ -80,6 +83,7 @@ module.exports.loop = function() {
     /*
     控制台输出
      */
+    console.log('***time:'+Game.time+'***')
     console.log('harvester:'+charvester);
     console.log('builder:'+cbuilder);
     console.log('carrier:'+ccarrier);
@@ -87,7 +91,8 @@ module.exports.loop = function() {
     console.log('upgrader:'+cupgrader);
     console.log('distributer:'+cdistributor);
     console.log('towerServer: '+ctowerServer);
-    console.log('totalCreep:'+(charvester+cbuilder+ccarrier+crepairer+cupgrader+cdistributor+ctowerServer));
+    console.log('wallRepairer: '+cwallRepairer);
+    console.log('totalCreep:'+(charvester+cbuilder+ccarrier+crepairer+cupgrader+cdistributor+ctowerServer+cwallRepairer));
     for(let name in Game.creeps){
         let creep = Game.creeps[name];
         switch(creep.memory.role) {
@@ -122,4 +127,5 @@ module.exports.loop = function() {
     }
     roomSpawn.spawn();
     roomTower.run();
+    roomSchedule.run("W13N57");
 }

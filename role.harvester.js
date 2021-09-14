@@ -1,6 +1,7 @@
 function harvesterRegister(creep) {//向Source注册
     if(creep.memory.hasOwnProperty('registed') && creep.memory.registed)
         return;
+    creep.register();
     let flag = Game.flags[creep.memory.target];
     if(!flag.memory.hasOwnProperty('harvester'))
         flag.memory.harvester = {};
