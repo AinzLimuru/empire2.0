@@ -25,9 +25,18 @@ var roleRepairer = {
             creep.memory.repairing = true;
         }
         if(creep.memory.repairing) {
-            var targets = creep.room.find(FIND_STRUCTURES, {
-                filter: (i) => this.needRepair(i)
-            });
+            // var targets = creep.room.find(FIND_STRUCTURES, {
+            //     filter: (i) => this.needRepair(i)
+            // });
+            var targets = [];
+            for(let room in Memory.rooms){
+                if(!Game.rooms[room]){
+                    continue;
+                }
+                targets.push.apply(targets,Game.rooms[room].find(FIND_STRUCTURES, {
+                        filter: (i) => this.needRepair(i)
+                    }))
+            }
             if(!Game.flags['RepairSet'].memory.hasOwnProperty('repairSet'))
                 Game.flags['RepairSet'].memory.repairSet = new Set();
             for(let i=0; i<targets.length; i++){
@@ -36,7 +45,6 @@ var roleRepairer = {
             creep.say(Object.keys(Game.flags['RepairSet'].memory.repairSet).length)
             if(Object.keys(Game.flags['RepairSet'].memory.repairSet).length) {
                 let it = 0;
-
                 for(let id in Game.flags['RepairSet'].memory.repairSet){
                     let structure = Game.getObjectById(id);
                     if(!structure || structure.hits == structure.hitsMax){//建筑不存在或已被摧毁,执行重建
@@ -49,7 +57,7 @@ var roleRepairer = {
                     }
                 }
                 if(Object.keys(Game.flags['RepairSet'].memory.repairSet).length && creep.repair(it) == ERR_NOT_IN_RANGE) {//元素删除后，set可能为空
-                    creep.moveTo(it.pos);
+                    creep.goTo(it.pos);
                 }
             }
             else {
@@ -57,20 +65,10 @@ var roleRepairer = {
             }
         }
         else {
-            var saveTarget = creep.room.find(FIND_STRUCTURES, {//找到所有非空储存罐
-                filter: (i) => (i.structureType == STRUCTURE_CONTAINER || i.structureType == STRUCTURE_STORAGE ) &&
-                    i.store[RESOURCE_ENERGY] > 0
-            });
-            let it = 0;
-            for(let i = 0;i<saveTarget.length;i++){
-                if(saveTarget[i].pos.getRangeTo(creep.pos) < saveTarget[it].pos.getRangeTo(creep.pos)){
-                    it = i;
-                }
-            }
-
-            if(creep.withdraw(saveTarget[it],RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(saveTarget[it].pos, {visualizePathStyle: {stroke: '#ffaa00'}});
-            }
+            if(creep.room.controller && creep.room.controller.my)//主房间从储存罐取能量，外矿到处取能量
+                creep.fetchEnergy();
+            else
+                creep.fetchEnergy(4);
         }
     }
 }

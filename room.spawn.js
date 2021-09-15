@@ -30,6 +30,7 @@ var RoomSpawn = {
             return total;
         }
     },
+    //TODO:下面这俩也需要封装到原形
     addSpawnPlan: function (body,info) {
         console.log('new ' + info.role);
         let name = info.role + Game.time;

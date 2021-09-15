@@ -1,4 +1,4 @@
-let creepExtension = {
+var creepExtension = {
     init: function () {
         _.assign(Creep.prototype, this.creepExtension);
     },
@@ -10,7 +10,25 @@ let creepExtension = {
             urge=1:从storage,container中取得能量，不考虑储量
             urge=2:从所有可能的容器中取得能量(不包括spawn)
             urge=3:从所有可能的容器和harvester中取得能量
+            urge=4:自己挖
              */
+            switch (urge){
+                case 0:
+                    this.fetchEnergy_0();
+                    break;
+                case 1:
+                    this.fetchEnergy_1();
+                    break;
+                case 2:
+                    this.fetchEnergy_2();
+                    break;
+                case 3:
+                    this.fetchEnergy_3();
+                    break;
+                case 4:
+                    this.fetchEnergy_4();
+                    break;
+            }
         },
         fetchEnergy_0:function () {
             let saveTarget = this.room.find(FIND_STRUCTURES, {//找到所有非空储存罐
@@ -33,6 +51,9 @@ let creepExtension = {
             }
         },
         fetchEnergy_1:function () {
+            if(this.fetchEnergy_0()){
+                return true;
+            }
             let saveTarget = this.room.find(FIND_STRUCTURES, {//找到所有非空储存罐
                 filter: (i) => (i.structureType == STRUCTURE_STORAGE || i.structureType == STRUCTURE_CONTAINER) &&
                     i.store[RESOURCE_ENERGY] > 0
@@ -53,6 +74,9 @@ let creepExtension = {
             }
         },
         fetchEnergy_2:function () {
+            if(this.fetchEnergy_1()){
+                return true;
+            }
             let saveTarget = this.room.find(FIND_STRUCTURES, {//找到所有非空储存罐
                 filter: (i) => (i.structureType == STRUCTURE_EXTENSION ) &&
                     i.store[RESOURCE_ENERGY] > 0
@@ -73,7 +97,13 @@ let creepExtension = {
             }
         },
         fetchEnergy_3:function () {
-            let harvesters = Memory.rooms[this.room.name].creeps.harvester;
+            if(this.fetchEnergy_2()){
+                return true;
+            }
+            let harvesters = [];
+            if(Memory.rooms[this.room.name].creeps && Memory.rooms[this.room.name].creeps.harvester){
+                harvesters = Memory.rooms[this.room.name].creeps.harvester;
+            }
             if (harvesters.length > 0) {//有存储罐
                 let it = 0;
                 for (let i = 0; i < harvesters.length; i++) {
@@ -99,6 +129,27 @@ let creepExtension = {
                 }
             }else{
                 return false;//没有harvester
+            }
+        },
+        fetchEnergy_4: function () {
+            if(this.fetchEnergy_3()){
+                return true;
+            }
+            let sources = this.room.find(FIND_SOURCES);
+            let target=null;
+            if(sources.length) {
+                for (let source of sources) {
+                    if (!target || this.pos.getRangeTo(source.pos) < this.pos.getRangeTo(it.pos)) {
+                        target = source;
+                    }
+                }
+                this.say(this.harvest(target));
+                if(this.harvest(target) == ERR_NOT_IN_RANGE) {
+                    this.moveTo(target.pos);
+                }
+                return true;
+            }else{
+                return false;
             }
         },
         getFrom: function (target) {
@@ -129,7 +180,7 @@ let creepExtension = {
             前往指定房间的指定位置
              */
             if(room && this.room.name != pos.roomName){
-                this.moveTo(Memory[this.room.name].to[pos.roomName].x && Memory[this.room.name].to[pos.roomName].y);
+                this.moveTo(Memory.rooms[this.room.name].to[pos.roomName].x , Memory[this.room.name].to[pos.roomName].y);
             }else{
                 this.moveTo(pos);
             }
@@ -139,7 +190,7 @@ let creepExtension = {
             前往指定房间的指定位置
              */
             if(room && this.room.name != room){
-                this.moveTo(Memory[this.room.name].to[room].x && Memory[this.room.name].to[room].y);
+                this.moveTo(Memory.rooms[this.room.name].to[room].x , Memory.rooms[this.room.name].to[room].y);
             }else{
                 this.moveTo(x,y);
             }
@@ -158,7 +209,8 @@ let creepExtension = {
                 Memory.rooms[this.room.name].creeps[this.memory.role] = {};
             }
             Memory.rooms[this.room.name].creeps[this.memory.role][this.id] = this.name;
-        }
+        },
+
     }
 }
 
